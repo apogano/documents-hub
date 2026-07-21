@@ -138,3 +138,11 @@ MIN_MEANINGFUL_TEXT_LENGTH = 10
 # Elasticsearch
 ELASTICSEARCH_URL = os.environ.get("ELASTICSEARCH_URL", "http://elasticsearch:9200")
 ELASTICSEARCH_INDEX = os.environ.get("ELASTICSEARCH_INDEX", "documents")
+
+
+# Celery
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
