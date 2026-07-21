@@ -134,3 +134,7 @@ REST_FRAMEWORK = {
 
 
 MIN_MEANINGFUL_TEXT_LENGTH = 10
+
+# Elasticsearch
+ELASTICSEARCH_URL = os.environ.get("ELASTICSEARCH_URL", "http://elasticsearch:9200")
+ELASTICSEARCH_INDEX = os.environ.get("ELASTICSEARCH_INDEX", "documents")
