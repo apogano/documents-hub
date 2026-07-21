@@ -3,27 +3,19 @@ import os
 from django.utils import timezone
 from django.conf import settings
 
-from .models import Document 
-from .extraction.mime_detect import detect_mime_type 
-from .extraction.direct_text import (
+from documents.models import Document 
+from documents.extraction.mime_detect import detect_mime_type 
+from documents.extraction.direct_text import (
     extract_txt_text,
     extract_docx_text,
     extract_odt_text,
     extract_pdf_text_directly
 )
-from .extraction.ocr import run_ocr_on_image, run_ocr_on_pdf
+from documents.extraction.ocr import run_ocr_on_image, run_ocr_on_pdf
 
-from .extraction.pipeline import extract_content
+from documents.extraction.pipeline import extract_content
 
-from elasticsearch import Elasticsearch
-from .search import (
-    get_es_client, 
-    ensure_index_exists,
-    index_document,
-    search_documents
-)
-
-class DocumentTestCase(TestCase): 
+class ExtractionTestCase(TestCase): 
     def test_detect_mime_type(self): 
         self.assertEqual(  
             detect_mime_type(
@@ -122,24 +114,3 @@ class DocumentTestCase(TestCase):
             ),
             ('This is a test pdf image document.\ntestl\n\ntest\n','ocr') 
         )          
-
-class ElasticTestCase(TestCase): 
-    def test_get_client(self):
-        self.assertIsInstance(
-            get_es_client(),
-            Elasticsearch
-        )
-        
-    def test_ensure_index_exists(self):
-        ensure_index_exists()   
-
-    def test_index_and_search_document(self):
-        index_document(
-            document_id="test-doc-1",
-            filename="invoice_march.pdf",
-            content="This invoice covers services rendered in March, total amount due is 450 dollars.",
-            mime_type="application/pdf",
-            uploaded_at=timezone.now(),  
-        )
-        results = search_documents("invoice total")
-        print(results)
