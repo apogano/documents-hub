@@ -12,6 +12,9 @@ from .extraction.direct_text import (
 )
 from .extraction.ocr import run_ocr_on_image, run_ocr_on_pdf
 
+
+from .extraction.pipeline import extract_content
+
 class DocumentTestCase(TestCase): 
     def test_detect_mime_type(self): 
         self.assertEqual(  
@@ -30,6 +33,10 @@ class DocumentTestCase(TestCase):
         self.assertEqual(  
             detect_mime_type(os.path.join(settings.BASE_DIR, 'documents/tests/TestPDFDocument.pdf')),
             'application/pdf') 
+            
+        self.assertEqual(  
+            detect_mime_type(os.path.join(settings.BASE_DIR, 'documents/tests/TestImageDocument.png')),
+            'image/png')             
             
     
     def test_direct_text(self): 
@@ -58,3 +65,52 @@ class DocumentTestCase(TestCase):
             run_ocr_on_pdf(os.path.join(settings.BASE_DIR, 'documents/tests/TestPDFImageDocument.pdf')),
             'This is a test pdf image document.\ntestl\n\ntest\n')         
         
+    def test_pipeline_text(self):
+        filename = os.path.join(settings.BASE_DIR, 'documents/tests/TestTxtDocument.txt')
+        self.assertEqual( 
+            extract_content(
+                filename,
+                detect_mime_type(filename)
+            ),
+            ('This is a test txt document.\n\ntest1\n\ntest2\n','direct_text') 
+        ) 
+        
+    def test_pipeline_docx(self):
+        filename = os.path.join(settings.BASE_DIR, 'documents/tests/TestDocxDocument.docx')
+        self.assertEqual( 
+            extract_content(
+                filename,
+                detect_mime_type(filename)
+            ),
+            ('This is a test docx document.\ntest1\ntest2','direct_text') 
+        )         
+
+    def test_pipeline_odt(self):
+        filename = os.path.join(settings.BASE_DIR, 'documents/tests/TestODtDocument.odt')
+        self.assertEqual( 
+            extract_content(
+                filename,
+                detect_mime_type(filename)
+            ),
+            ('This is a test odt document.\ntest1\ntest2','direct_text') 
+        )          
+        
+    def test_pipeline_pdf(self):
+        #DIRECT_TEXT
+        filename = os.path.join(settings.BASE_DIR, 'documents/tests/TestPDFDocument.pdf')
+        self.assertEqual( 
+            extract_content(
+                filename,
+                detect_mime_type(filename)
+            ),
+            ('This is a test pdf document.\ntest1\ntest2','direct_text') 
+        )
+        #OCR
+        filename = os.path.join(settings.BASE_DIR, 'documents/tests/TestPDFImageDocument.pdf')
+        self.assertEqual( 
+            extract_content(
+                filename,
+                detect_mime_type(filename)
+            ),
+            ('This is a test pdf image document.\ntestl\n\ntest\n','ocr') 
+        )          
