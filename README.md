@@ -8,4 +8,4 @@ Password:123456
 docx,
 pdfplumber,
 odfpy,
-
+pytesseract
