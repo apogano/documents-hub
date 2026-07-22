@@ -42,7 +42,7 @@ class ExtractionTestCase(TestCase):
     def test_direct_text(self): 
         self.assertEqual( 
             extract_txt_text(os.path.join(settings.BASE_DIR, 'documents/tests/TestTxtDocument.txt')),
-            'This is a test txt document.\n\ntest1\n\ntest2\n' ) 
+            'This is a test txt document.\ntest1\ntest2\n' ) 
         
         self.assertEqual( 
             extract_docx_text(os.path.join(settings.BASE_DIR, 'documents/tests/TestDocxDocument.docx')),
