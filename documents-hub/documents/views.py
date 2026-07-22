@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import render
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import status
 
 from .models import Document, DocumentStatus
@@ -13,6 +13,8 @@ from .serializers import DocumentSerializer,DocumentUploadSerializer
 
 from .extraction.mime_detect import detect_mime_type
 from .tasks import process_document
+from .search import search_documents
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -83,3 +85,12 @@ def upload_document(request):
     process_document.delay(str(document.id))
 
     return Response(DocumentSerializer(document).data, status=status.HTTP_202_ACCEPTED)
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def search(request):
+    query = request.query_params.get("q", "").strip()
+    if not query:
+        return Response({"detail": "Query parameter 'q' is required."}, status=400)
+    results = search_documents(query)
+    return Response({"query": query, "results": results})
