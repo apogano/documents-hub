@@ -13,11 +13,15 @@ logger = logging.getLogger(__name__)
 class PermanentDocumentError(Exception):
     """
     Raised for failures that retrying will never fix: unsupported file
-    types, corrupt files that can't be opened at all, etc. Same principle
-    as Project 1's PermanentJobError -- decide permanence explicitly,
-    rather than by inspecting the type of exception a library happens to
-    raise.
+    types, corrupt files that can't be opened at all, etc. Deciding
+    permanence explicitly here -- rather than by inspecting the *type* of
+    exception a library happens to raise -- matters because libraries like
+    Pillow or pdfplumber can raise the same exception type (e.g. OSError)
+    for both truly transient issues (a disk hiccup) and permanent ones (a
+    corrupt file). Branching on exception type conflates those two very
+    different situations; branching on an explicit decision does not.
     """
+
     
     
 @shared_task(
