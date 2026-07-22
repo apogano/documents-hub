@@ -146,3 +146,5 @@ CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_ACCEPT_CONTENT = ["json"]
+
+DOCUMENT_STORAGE_DIR = os.environ.get("DOCUMENT_STORAGE_DIR", "/tmp/documents")
